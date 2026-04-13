@@ -14,6 +14,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import com.matheustorres.gympass.domain.usecases.CreateGymUseCase;
+import com.matheustorres.gympass.domain.usecases.FetchNearbyGymsUseCase;
+import com.matheustorres.gympass.web.dtos.request.NearbyGymsRequestDTO;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/gyms")
@@ -21,10 +28,19 @@ import com.matheustorres.gympass.domain.usecases.CreateGymUseCase;
 public class GymController {
 
     private final CreateGymUseCase createGymUseCase;
+    private final FetchNearbyGymsUseCase fetchNearbyGymsUseCase;
 
     @PostMapping
     public ResponseEntity<GymResponseDTO> create(@Valid @RequestBody GymRequestDTO request) {
         Gym gym = createGymUseCase.execute(request);
         return ResponseEntity.status(201).body(GymResponseDTO.from(gym));
+    }
+
+    @GetMapping("/nearby")
+    public ResponseEntity<List<GymResponseDTO>> nearby(@Valid @ModelAttribute NearbyGymsRequestDTO request) {
+        List<Gym> gyms = fetchNearbyGymsUseCase.execute(request);
+        return ResponseEntity.ok(gyms.stream()
+                .map(GymResponseDTO::from)
+                .collect(Collectors.toList()));
     }
 }

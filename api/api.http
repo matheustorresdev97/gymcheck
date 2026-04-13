@@ -63,3 +63,6 @@ Authorization: Bearer {{token}}
 ### Get user metrics (Admin only)
 GET http://localhost:8080/check-ins/metrics?userId=target-user-id
 Authorization: Bearer {{token}}
+
+### Search nearby gyms (Public)
+GET http://localhost:8080/gyms/nearby?latitude=-27.2092052&longitude=-49.6401091
