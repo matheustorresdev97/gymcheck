@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CheckInRepository extends JpaRepository<CheckIn, String> {
     Page<CheckIn> findByUserId(String userId, Pageable pageable);
+
+    long countByUserId(String userId);
 }

@@ -4,8 +4,10 @@ import com.matheustorres.gympass.domain.models.CheckIn;
 import com.matheustorres.gympass.domain.models.User;
 import com.matheustorres.gympass.domain.usecases.CreateCheckInUseCase;
 import com.matheustorres.gympass.domain.usecases.FetchUserCheckInHistoryUseCase;
+import com.matheustorres.gympass.domain.usecases.GetUserMetricsUseCase;
 import com.matheustorres.gympass.web.dtos.request.CheckInRequestDTO;
 import com.matheustorres.gympass.web.dtos.response.CheckInResponseDTO;
+import com.matheustorres.gympass.web.dtos.response.UserMetricsResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +25,7 @@ public class CheckInController {
 
     private final CreateCheckInUseCase createCheckInUseCase;
     private final FetchUserCheckInHistoryUseCase fetchUserCheckInHistoryUseCase;
+    private final GetUserMetricsUseCase getUserMetricsUseCase;
 
     @PostMapping
     public ResponseEntity<CheckInResponseDTO> create(@RequestBody @Valid CheckInRequestDTO dto) {
@@ -38,5 +41,11 @@ public class CheckInController {
     ) {
         Page<CheckIn> history = fetchUserCheckInHistoryUseCase.execute(requester, userId, pageable);
         return ResponseEntity.ok(history.map(CheckInResponseDTO::from));
+    }
+
+    @GetMapping("/metrics")
+    public ResponseEntity<UserMetricsResponseDTO> metrics(@RequestParam String userId) {
+        long count = getUserMetricsUseCase.execute(userId);
+        return ResponseEntity.ok(new UserMetricsResponseDTO(count));
     }
 }

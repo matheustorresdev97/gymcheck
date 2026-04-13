@@ -59,3 +59,7 @@ Authorization: Bearer {{token}}
 ### Get specific user check-in history (Admin only)
 GET http://localhost:8080/check-ins/history?userId=target-user-id&page=0&size=10
 Authorization: Bearer {{token}}
+
+### Get user metrics (Admin only)
+GET http://localhost:8080/check-ins/metrics?userId=target-user-id
+Authorization: Bearer {{token}}
