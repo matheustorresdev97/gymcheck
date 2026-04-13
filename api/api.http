@@ -1,3 +1,5 @@
+
+
 ### Register a new user
 POST http://localhost:8080/auth/register
 Content-Type: application/json
@@ -9,10 +11,27 @@ Content-Type: application/json
 }
 
 ### Login with the new user
+# @name login
 POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
   "email": "johndoe@example.com",
   "password": "password123"
+}
+
+@token = {{login.response.body.token}}
+
+### Get user profile
+GET http://localhost:8080/users/me
+Authorization: Bearer {{token}}
+
+### Create a check-in
+POST http://localhost:8080/check-ins
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "userId": "user-uuid-here",
+  "gymId": "gym-uuid-here"
 }
