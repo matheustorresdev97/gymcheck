@@ -21,11 +21,17 @@ Content-Type: application/json
 
 @token = {{login.response.body.token}}
 
+### Refresh the access token
+PATCH http://localhost:8080/token/refresh
+Content-Type: application/json
+
+@newToken = {{refresh.response.body.token}}
+
 ### Get user profile
 GET http://localhost:8080/users/me
 Authorization: Bearer {{token}}
 
-### Create a gym
+### Create a gym (Admin only)
 # @name createGym
 POST http://localhost:8080/gyms
 Content-Type: application/json
@@ -60,10 +66,6 @@ Authorization: Bearer {{token}}
 
 ### Get own check-in history
 GET http://localhost:8080/check-ins/history?page=0&size=20
-Authorization: Bearer {{token}}
-
-### Get user metrics (Admin only)
-GET http://localhost:8080/check-ins/metrics?userId=target-user-id
 Authorization: Bearer {{token}}
 
 ### Search gyms by name (Public)

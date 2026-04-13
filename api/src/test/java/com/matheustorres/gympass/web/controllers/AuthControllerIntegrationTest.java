@@ -3,13 +3,14 @@ package com.matheustorres.gympass.web.controllers;
 import com.matheustorres.gympass.domain.models.enums.UserRole;
 import com.matheustorres.gympass.web.dtos.request.LoginRequestDTO;
 import com.matheustorres.gympass.web.dtos.request.RegisterUserRequestDTO;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class AuthControllerIntegrationTest extends AbstractIT {
 
@@ -38,7 +39,7 @@ class AuthControllerIntegrationTest extends AbstractIT {
     }
 
     @Test
-    @DisplayName("Deve fazer login com sucesso e retornar token")
+    @DisplayName("Deve fazer login com sucesso e retornar token e cookie")
     void shouldLoginSuccessfully() throws Exception {
         createAndRegisterUser("John", "john@example.com", "password123", UserRole.MEMBER);
 
@@ -47,6 +48,29 @@ class AuthControllerIntegrationTest extends AbstractIT {
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").exists())
+                .andExpect(header().exists("Set-Cookie"))
+                .andExpect(cookie().exists("refreshToken"))
+                .andExpect(cookie().httpOnly("refreshToken", true));
+    }
+
+    @Test
+    @DisplayName("Deve ser possível renovar o token de acesso")
+    void shouldBeAbleToRefreshAccessToken() throws Exception {
+        createAndRegisterUser("John", "john@example.com", "password123", UserRole.MEMBER);
+
+        LoginRequestDTO loginDTO = new LoginRequestDTO("john@example.com", "password123");
+
+        var loginResult = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDTO)))
+                .andReturn();
+
+        Cookie refreshTokenCookie = loginResult.getResponse().getCookie("refreshToken");
+
+        mockMvc.perform(patch("/token/refresh")
+                        .cookie(refreshTokenCookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists());
     }

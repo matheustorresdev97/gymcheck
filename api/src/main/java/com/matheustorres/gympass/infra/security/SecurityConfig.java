@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/token/refresh").permitAll()
                         .requestMatchers(HttpMethod.POST, "/gyms").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/gyms/nearby").permitAll()
                         .requestMatchers(HttpMethod.GET, "/gyms/search").permitAll()

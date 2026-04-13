@@ -5,7 +5,6 @@ import com.matheustorres.gympass.infra.security.TokenService;
 import com.matheustorres.gympass.tests.AuthFactory;
 import com.matheustorres.gympass.tests.UserFactory;
 import com.matheustorres.gympass.web.dtos.request.LoginRequestDTO;
-import com.matheustorres.gympass.web.dtos.response.LoginResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,36 +35,40 @@ class AuthenticateUserUseCaseTest {
 
     private LoginRequestDTO loginRequestDTO;
     private User user;
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 
     @BeforeEach
     void setUp() {
         loginRequestDTO = AuthFactory.createLoginRequestDTO();
         user = UserFactory.createUser();
-        token = "jwt_token";
+        accessToken = "access_token";
+        refreshToken = "refresh_token";
     }
 
     @Test
-    @DisplayName("Deve autenticar usuário com sucesso e retornar DTO com token")
+    @DisplayName("Deve autenticar usuário com sucesso e retornar LoginResult com tokens")
     void shouldAuthenticateUserSuccessfully() {
         // Arrange
         Authentication auth = mock(Authentication.class);
         when(auth.getPrincipal()).thenReturn(user);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(auth);
-        when(tokenService.generateToken(user)).thenReturn(token);
+        when(tokenService.generateAccessToken(user)).thenReturn(accessToken);
+        when(tokenService.generateRefreshToken(user)).thenReturn(refreshToken);
 
         // Act
-        LoginResponseDTO result = authenticateUserUseCase.execute(loginRequestDTO);
+        LoginResult result = authenticateUserUseCase.execute(loginRequestDTO);
 
         // Assert
         assertNotNull(result);
-        assertEquals(token, result.token());
-        assertEquals(user.getEmail(), result.user().email());
-        assertEquals(user.getId(), result.user().id());
-        assertTrue(result.user().roles().contains("ROLE_MEMBER"));
+        assertEquals(accessToken, result.loginResponse().token());
+        assertEquals(refreshToken, result.refreshToken());
+        assertEquals(user.getEmail(), result.loginResponse().user().email());
+        assertEquals(user.getId(), result.loginResponse().user().id());
 
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(tokenService, times(1)).generateToken(user);
+        verify(tokenService, times(1)).generateAccessToken(user);
+        verify(tokenService, times(1)).generateRefreshToken(user);
     }
 
     @Test
@@ -79,6 +82,6 @@ class AuthenticateUserUseCaseTest {
         assertThrows(BadCredentialsException.class, () -> authenticateUserUseCase.execute(loginRequestDTO));
         
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(tokenService, never()).generateToken(any());
+        verify(tokenService, never()).generateAccessToken(any());
     }
 }

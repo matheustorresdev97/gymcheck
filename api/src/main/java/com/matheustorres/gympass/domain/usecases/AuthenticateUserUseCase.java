@@ -18,17 +18,20 @@ public class AuthenticateUserUseCase {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
-    public LoginResponseDTO execute(LoginRequestDTO dto) {
+    public LoginResult execute(LoginRequestDTO dto) {
         var authToken = new UsernamePasswordAuthenticationToken(dto.email(), dto.password());
         Authentication auth = authenticationManager.authenticate(authToken);
 
         User user = (User) auth.getPrincipal();
-        String token = tokenService.generateToken(user);
+        String accessToken = tokenService.generateAccessToken(user);
+        String refreshToken = tokenService.generateRefreshToken(user);
         UserResponseDTO userResponse = UserResponseDTO.from(user);
 
-        return LoginResponseDTO.builder()
+        LoginResponseDTO loginResponse = LoginResponseDTO.builder()
                 .user(userResponse)
-                .token(token)
+                .token(accessToken)
                 .build();
+
+        return new LoginResult(loginResponse, refreshToken);
     }
 }
