@@ -1,7 +1,10 @@
 package com.matheustorres.gympass.web.controllers;
 
+import com.matheustorres.gympass.domain.usecases.AuthenticateUserUseCase;
 import com.matheustorres.gympass.domain.usecases.RegisterUserUseCase;
+import com.matheustorres.gympass.web.dtos.request.LoginRequestDTO;
 import com.matheustorres.gympass.web.dtos.request.RegisterUserRequestDTO;
+import com.matheustorres.gympass.web.dtos.response.LoginResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,11 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final RegisterUserUseCase useCase;
+    private final RegisterUserUseCase registerUserUseCase;
+    private final AuthenticateUserUseCase authenticateUserUseCase;
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody @Valid RegisterUserRequestDTO dto) {
-        useCase.register(dto);
+        registerUserUseCase.register(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO dto) {
+        LoginResponseDTO response = authenticateUserUseCase.execute(dto);
+        return ResponseEntity.ok(response);
     }
 }

@@ -7,6 +7,8 @@ import com.matheustorres.gympass.domain.models.User;
 import com.matheustorres.gympass.domain.models.enums.UserRole;
 import com.matheustorres.gympass.domain.repositories.RoleRepository;
 import com.matheustorres.gympass.domain.repositories.UserRepository;
+import com.matheustorres.gympass.tests.AuthFactory;
+import com.matheustorres.gympass.tests.UserFactory;
 import com.matheustorres.gympass.web.dtos.request.RegisterUserRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,8 +45,8 @@ class RegisterUserUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        requestDTO = new RegisterUserRequestDTO("John Doe", "john@example.com", "password123");
-        memberRole = new Role(1L, UserRole.MEMBER.getRole());
+        requestDTO = AuthFactory.createRegisterRequestDTO();
+        memberRole = UserFactory.createRole();
     }
 
     @Test
@@ -71,7 +73,7 @@ class RegisterUserUseCaseTest {
     @DisplayName("Deve lançar UserAlreadyExistsException quando o e-mail já estiver em uso")
     void shouldThrowExceptionWhenEmailExists() {
         // Arrange
-        when(userRepository.findByEmail(requestDTO.email())).thenReturn(Optional.of(new User()));
+        when(userRepository.findByEmail(requestDTO.email())).thenReturn(Optional.of(UserFactory.createUser()));
 
         // Act & Assert
         assertThrows(UserAlreadyExistsException.class, () -> registerUserUseCase.register(requestDTO));
