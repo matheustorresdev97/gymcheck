@@ -7,3 +7,8 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: none
+
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:my-secret-key}

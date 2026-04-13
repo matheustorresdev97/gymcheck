@@ -1,4 +1,4 @@
-package com.matheustorres.gympass.entities;
+package com.matheustorres.gympass.domain.models;
 
 import jakarta.persistence.*;
 import lombok.*;
