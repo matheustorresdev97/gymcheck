@@ -33,5 +33,7 @@ Authorization: Bearer {{token}}
 
 {
   "userId": "user-uuid-here",
-  "gymId": "gym-uuid-here"
+  "gymId": "gym-uuid-here",
+  "userLatitude": -27.2092052,
+  "userLongitude": -49.6401091
 }

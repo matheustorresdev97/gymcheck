@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "check_ins")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")

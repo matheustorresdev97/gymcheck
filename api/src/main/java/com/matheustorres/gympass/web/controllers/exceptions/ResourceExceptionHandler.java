@@ -1,8 +1,9 @@
 package com.matheustorres.gympass.web.controllers.exceptions;
 
+import com.matheustorres.gympass.domain.exceptions.MaxDistanceException;
+import com.matheustorres.gympass.domain.exceptions.ResourceNotFoundException;
 import com.matheustorres.gympass.domain.exceptions.RoleNotFoundException;
 import com.matheustorres.gympass.domain.exceptions.UserAlreadyExistsException;
-import com.matheustorres.gympass.domain.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,18 @@ public class ResourceExceptionHandler {
         err.setTimestamp(Instant.now());
         err.setStatus(status.value());
         err.setError("Resource not found");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(MaxDistanceException.class)
+    public ResponseEntity<StandardError> maxDistanceExceeded(MaxDistanceException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("Max distance exceeded");
         err.setMessage(e.getMessage());
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);

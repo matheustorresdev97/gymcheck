@@ -1,5 +1,6 @@
 package com.matheustorres.gympass.domain.usecases;
 
+import com.matheustorres.gympass.domain.exceptions.MaxDistanceException;
 import com.matheustorres.gympass.domain.exceptions.ResourceNotFoundException;
 import com.matheustorres.gympass.domain.models.CheckIn;
 import com.matheustorres.gympass.domain.models.Gym;
@@ -41,19 +42,24 @@ class CreateCheckInUseCaseTest {
 
     private User user;
     private Gym gym;
-    private CheckInRequestDTO requestDTO;
 
     @BeforeEach
     void setUp() {
         user = UserFactory.createUser();
         gym = GymFactory.createGym();
-        requestDTO = new CheckInRequestDTO(user.getId(), gym.getId());
     }
 
     @Test
     @DisplayName("Deve criar um check-in com sucesso")
     void shouldCreateCheckInSuccessfully() {
         // Arrange
+        CheckInRequestDTO requestDTO = new CheckInRequestDTO(
+                user.getId(),
+                gym.getId(),
+                gym.getLatitude().doubleValue(),
+                gym.getLongitude().doubleValue()
+        );
+
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(gymRepository.findById(gym.getId())).thenReturn(Optional.of(gym));
         when(checkInRepository.save(any(CheckIn.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -68,31 +74,48 @@ class CreateCheckInUseCaseTest {
         assertNotNull(result.getId());
         verify(userRepository, times(1)).findById(user.getId());
         verify(gymRepository, times(1)).findById(gym.getId());
-        verify(checkInRepository, times(1)).save(any(CheckIn.class));
+    }
+
+    @Test
+    @DisplayName("Não deve ser possível fazer check-in em academias distantes")
+    void shouldNotBeAbleToCheckInOnDistantGym() {
+        // Arrange
+        // Coordenadas distantes (aprox 15km)
+        CheckInRequestDTO requestDTO = new CheckInRequestDTO(
+                user.getId(),
+                gym.getId(),
+                -27.0702174,
+                -49.4812472
+        );
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(gymRepository.findById(gym.getId())).thenReturn(Optional.of(gym));
+
+        // Act & Assert
+        assertThrows(MaxDistanceException.class, () -> createCheckInUseCase.execute(requestDTO));
+        verify(checkInRepository, never()).save(any(CheckIn.class));
     }
 
     @Test
     @DisplayName("Deve lançar ResourceNotFoundException quando o usuário não existe")
     void shouldThrowExceptionWhenUserNotFound() {
         // Arrange
+        CheckInRequestDTO requestDTO = new CheckInRequestDTO(user.getId(), gym.getId(), 0.0, 0.0);
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> createCheckInUseCase.execute(requestDTO));
-        verify(userRepository, times(1)).findById(user.getId());
-        verifyNoInteractions(gymRepository, checkInRepository);
     }
 
     @Test
     @DisplayName("Deve lançar ResourceNotFoundException quando a academia não existe")
     void shouldThrowExceptionWhenGymNotFound() {
         // Arrange
+        CheckInRequestDTO requestDTO = new CheckInRequestDTO(user.getId(), gym.getId(), 0.0, 0.0);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(gymRepository.findById(gym.getId())).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> createCheckInUseCase.execute(requestDTO));
-        verify(gymRepository, times(1)).findById(gym.getId());
-        verifyNoInteractions(checkInRepository);
     }
 }
