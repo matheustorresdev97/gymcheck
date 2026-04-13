@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build and Run Tests
+      working-directory: ./api
+      run: mvn -B test
+      env:
+        # These are used for production/dev-local but the tests use H2
+        # However, we set them to avoid any potential runtime issues with missing variables
+        SPRING_PROFILES_ACTIVE: test
+        JWT_SECRET: my-secret-key-for-testing-purposes
