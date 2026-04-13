@@ -51,3 +51,11 @@ Authorization: Bearer {{token}}
   "latitude": -27.2092052,
   "longitude": -49.6401091
 }
+
+### Get own check-in history
+GET http://localhost:8080/check-ins/history
+Authorization: Bearer {{token}}
+
+### Get specific user check-in history (Admin only)
+GET http://localhost:8080/check-ins/history?userId=target-user-id&page=0&size=10
+Authorization: Bearer {{token}}
