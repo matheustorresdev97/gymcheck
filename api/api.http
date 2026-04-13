@@ -1,5 +1,4 @@
 
-
 ### Register a new user
 POST http://localhost:8080/auth/register
 Content-Type: application/json
@@ -26,18 +25,6 @@ Content-Type: application/json
 GET http://localhost:8080/users/me
 Authorization: Bearer {{token}}
 
-### Create a check-in
-POST http://localhost:8080/check-ins
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-  "userId": "user-uuid-here",
-  "gymId": "{{createGym.response.body.id}}",
-  "userLatitude": -27.2092052,
-  "userLongitude": -49.6401091
-}
-
 ### Create a gym
 # @name createGym
 POST http://localhost:8080/gyms
@@ -52,17 +39,35 @@ Authorization: Bearer {{token}}
   "longitude": -49.6401091
 }
 
-### Get own check-in history
-GET http://localhost:8080/check-ins/history
+@gymId = {{createGym.response.body.id}}
+
+### Create a check-in
+# @name createCheckIn
+POST http://localhost:8080/check-ins/{{gymId}}
+Content-Type: application/json
 Authorization: Bearer {{token}}
 
-### Get specific user check-in history (Admin only)
-GET http://localhost:8080/check-ins/history?userId=target-user-id&page=0&size=10
+{
+  "latitude": -27.2092052,
+  "longitude": -49.6401091
+}
+
+@checkInId = {{createCheckIn.response.body.id}}
+
+### Validate a check-in (Admin only)
+PATCH http://localhost:8080/check-ins/validate/{{checkInId}}
+Authorization: Bearer {{token}}
+
+### Get own check-in history
+GET http://localhost:8080/check-ins/history?page=0&size=20
 Authorization: Bearer {{token}}
 
 ### Get user metrics (Admin only)
 GET http://localhost:8080/check-ins/metrics?userId=target-user-id
 Authorization: Bearer {{token}}
+
+### Search gyms by name (Public)
+GET http://localhost:8080/gyms/search?q=JS&page=0&size=20
 
 ### Search nearby gyms (Public)
 GET http://localhost:8080/gyms/nearby?latitude=-27.2092052&longitude=-49.6401091

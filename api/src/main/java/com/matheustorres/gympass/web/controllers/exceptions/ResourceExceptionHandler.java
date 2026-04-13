@@ -1,5 +1,6 @@
 package com.matheustorres.gympass.web.controllers.exceptions;
 
+import com.matheustorres.gympass.domain.exceptions.LateCheckInValidationException;
 import com.matheustorres.gympass.domain.exceptions.MaxDistanceException;
 import com.matheustorres.gympass.domain.exceptions.ResourceNotFoundException;
 import com.matheustorres.gympass.domain.exceptions.RoleNotFoundException;
@@ -71,6 +72,18 @@ public class ResourceExceptionHandler {
         err.setTimestamp(Instant.now());
         err.setStatus(status.value());
         err.setError("Access denied");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(LateCheckInValidationException.class)
+    public ResponseEntity<StandardError> lateValidation(LateCheckInValidationException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("Validation expired");
         err.setMessage(e.getMessage());
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);

@@ -32,6 +32,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/gyms/nearby").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/gyms/search").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/check-ins/validate/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/check-ins/metrics").hasRole("ADMIN")
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()

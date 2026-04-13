@@ -5,7 +5,8 @@ import com.matheustorres.gympass.domain.models.User;
 import com.matheustorres.gympass.domain.usecases.CreateCheckInUseCase;
 import com.matheustorres.gympass.domain.usecases.FetchUserCheckInHistoryUseCase;
 import com.matheustorres.gympass.domain.usecases.GetUserMetricsUseCase;
-import com.matheustorres.gympass.web.dtos.request.CheckInRequestDTO;
+import com.matheustorres.gympass.domain.usecases.ValidateCheckInUseCase;
+import com.matheustorres.gympass.web.dtos.request.CheckInCreateRequestDTO;
 import com.matheustorres.gympass.web.dtos.response.CheckInResponseDTO;
 import com.matheustorres.gympass.web.dtos.response.UserMetricsResponseDTO;
 import jakarta.validation.Valid;
@@ -26,11 +27,22 @@ public class CheckInController {
     private final CreateCheckInUseCase createCheckInUseCase;
     private final FetchUserCheckInHistoryUseCase fetchUserCheckInHistoryUseCase;
     private final GetUserMetricsUseCase getUserMetricsUseCase;
+    private final ValidateCheckInUseCase validateCheckInUseCase;
 
-    @PostMapping
-    public ResponseEntity<CheckInResponseDTO> create(@RequestBody @Valid CheckInRequestDTO dto) {
-        CheckIn checkIn = createCheckInUseCase.execute(dto);
+    @PostMapping("/{gymId}")
+    public ResponseEntity<CheckInResponseDTO> create(
+            @PathVariable String gymId,
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid CheckInCreateRequestDTO dto
+    ) {
+        CheckIn checkIn = createCheckInUseCase.execute(user.getId(), gymId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(CheckInResponseDTO.from(checkIn));
+    }
+
+    @PatchMapping("/validate/{checkInId}")
+    public ResponseEntity<CheckInResponseDTO> validate(@PathVariable String checkInId) {
+        CheckIn checkIn = validateCheckInUseCase.execute(checkInId);
+        return ResponseEntity.ok(CheckInResponseDTO.from(checkIn));
     }
 
     @GetMapping("/history")

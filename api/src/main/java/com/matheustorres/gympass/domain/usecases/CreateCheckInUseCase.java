@@ -10,7 +10,7 @@ import com.matheustorres.gympass.domain.repositories.GymRepository;
 import com.matheustorres.gympass.domain.repositories.UserRepository;
 import com.matheustorres.gympass.infra.utils.Coordinate;
 import com.matheustorres.gympass.infra.utils.GeoUtils;
-import com.matheustorres.gympass.web.dtos.request.CheckInRequestDTO;
+import com.matheustorres.gympass.web.dtos.request.CheckInCreateRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,15 +28,15 @@ public class CreateCheckInUseCase {
     private final GymRepository gymRepository;
 
     @Transactional
-    public CheckIn execute(CheckInRequestDTO dto) {
-        User user = userRepository.findById(dto.userId())
+    public CheckIn execute(String userId, String gymId, CheckInCreateRequestDTO dto) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        Gym gym = gymRepository.findById(dto.gymId())
+        Gym gym = gymRepository.findById(gymId)
                 .orElseThrow(() -> new ResourceNotFoundException("Gym not found"));
 
         double distance = GeoUtils.getDistanceBetweenCoordinates(
-                new Coordinate(dto.userLatitude(), dto.userLongitude()),
+                new Coordinate(dto.latitude(), dto.longitude()),
                 new Coordinate(gym.getLatitude().doubleValue(), gym.getLongitude().doubleValue())
         );
 
