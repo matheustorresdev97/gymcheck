@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tb_role")
+@Table(name = "tb_roles")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

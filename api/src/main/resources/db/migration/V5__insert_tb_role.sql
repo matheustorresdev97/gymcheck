@@ -1,2 +1,2 @@
-INSERT INTO tb_role (authority) VALUES ('ADMIN');
-INSERT INTO tb_role (authority) VALUES ('MEMBER');
+INSERT INTO tb_roles (authority) VALUES ('ROLE_ADMIN');
+INSERT INTO tb_roles (authority) VALUES ('ROLE_MEMBER');

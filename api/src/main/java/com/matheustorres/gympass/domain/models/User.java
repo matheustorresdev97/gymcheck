@@ -15,6 +15,7 @@ import java.util.Set;
 @Table(name = "tb_users")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
