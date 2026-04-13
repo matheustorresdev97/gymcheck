@@ -32,8 +32,8 @@ class GymControllerIntegrationTest extends AbstractIT {
     @Test
     @DisplayName("Não deve criar academia se usuário não for Admin")
     void shouldNotCreateGymByMember() throws Exception {
-        createAndRegisterUser("Member", "member@example.com", "password123", UserRole.MEMBER);
-        String token = login("member@example.com", "password123");
+        createAndRegisterUser("Member", "member-test@example.com", "password123", UserRole.MEMBER);
+        String token = login("member-test@example.com", "password123");
 
         GymRequestDTO gymDTO = new GymRequestDTO("JS Academy", "Best academy", "1199999999", -27.2092052, -49.6401091);
 

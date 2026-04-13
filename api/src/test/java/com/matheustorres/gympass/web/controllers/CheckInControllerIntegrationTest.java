@@ -98,8 +98,8 @@ class CheckInControllerIntegrationTest extends AbstractIT {
     @Test
     @DisplayName("Não deve validar check-in se usuário não for Admin")
     void shouldNotValidateCheckInByMember() throws Exception {
-        createAndRegisterUser("Member", "member@example.com", "password123", UserRole.MEMBER);
-        String token = login("member@example.com", "password123");
+        createAndRegisterUser("Member", "member-test@example.com", "password123", UserRole.MEMBER);
+        String token = login("member-test@example.com", "password123");
 
         mockMvc.perform(patch("/check-ins/validate/" + UUID.randomUUID()))
                 .andExpect(status().isForbidden());
