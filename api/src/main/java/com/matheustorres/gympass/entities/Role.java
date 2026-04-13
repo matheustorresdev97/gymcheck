@@ -1,0 +1,34 @@
+package com.matheustorres.gympass.entities;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.Objects;
+
+@Entity
+@Table(name = "tb_role")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class Role {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String authority;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Role role)) return false;
+        return Objects.equals(id, role.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+}

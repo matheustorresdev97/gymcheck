@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: gympass
+  profiles:
+    active: test
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
