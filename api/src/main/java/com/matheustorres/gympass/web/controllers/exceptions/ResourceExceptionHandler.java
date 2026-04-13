@@ -2,6 +2,7 @@ package com.matheustorres.gympass.web.controllers.exceptions;
 
 import com.matheustorres.gympass.domain.exceptions.RoleNotFoundException;
 import com.matheustorres.gympass.domain.exceptions.UserAlreadyExistsException;
+import com.matheustorres.gympass.domain.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,18 @@ public class ResourceExceptionHandler {
 
     @ExceptionHandler(RoleNotFoundException.class)
     public ResponseEntity<StandardError> roleNotFound(RoleNotFoundException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("Resource not found");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<StandardError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         StandardError err = new StandardError();
         err.setTimestamp(Instant.now());

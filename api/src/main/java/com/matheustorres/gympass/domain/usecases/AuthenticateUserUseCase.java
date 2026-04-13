@@ -24,7 +24,11 @@ public class AuthenticateUserUseCase {
 
         User user = (User) auth.getPrincipal();
         String token = tokenService.generateToken(user);
+        UserResponseDTO userResponse = UserResponseDTO.from(user);
 
-        return new LoginResponseDTO(new UserResponseDTO(user), token);
+        return LoginResponseDTO.builder()
+                .user(userResponse)
+                .token(token)
+                .build();
     }
 }
