@@ -10,7 +10,8 @@ public record CheckInResponseDTO(
         String id,
         String userId,
         String gymId,
-        LocalDateTime createdAt) {
+        LocalDateTime createdAt,
+        LocalDateTime validatedAt) {
 
     public static CheckInResponseDTO from(CheckIn checkIn) {
         return CheckInResponseDTO.builder()
@@ -18,6 +19,7 @@ public record CheckInResponseDTO(
                 .userId(checkIn.getUser().getId())
                 .gymId(checkIn.getGym().getId())
                 .createdAt(checkIn.getCreatedAt())
+                .validatedAt(checkIn.getValidatedAt())
                 .build();
     }
 }

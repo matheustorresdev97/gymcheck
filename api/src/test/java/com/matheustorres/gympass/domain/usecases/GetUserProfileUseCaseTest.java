@@ -39,7 +39,7 @@ class GetUserProfileUseCaseTest {
     @DisplayName("Deve retornar o perfil do usuário quando o ID existe")
     void shouldReturnUserProfileWhenIdExists() {
         // Arrange
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepository.findByIdWithRoles(userId)).thenReturn(Optional.of(user));
 
         // Act
         User result = getUserProfileUseCase.execute(userId);
@@ -49,17 +49,17 @@ class GetUserProfileUseCaseTest {
         assertEquals(userId, result.getId());
         assertEquals(user.getName(), result.getName());
         assertEquals(user.getEmail(), result.getEmail());
-        verify(userRepository, times(1)).findById(userId);
+        verify(userRepository, times(1)).findByIdWithRoles(userId);
     }
 
     @Test
     @DisplayName("Deve lançar ResourceNotFoundException quando o ID não existe")
     void shouldThrowExceptionWhenIdDoesNotExist() {
         // Arrange
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        when(userRepository.findByIdWithRoles(userId)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> getUserProfileUseCase.execute(userId));
-        verify(userRepository, times(1)).findById(userId);
+        verify(userRepository, times(1)).findByIdWithRoles(userId);
     }
 }

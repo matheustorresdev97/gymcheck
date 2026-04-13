@@ -19,7 +19,7 @@ public class ResourceExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<StandardError> userAlreadyExists(UserAlreadyExistsException e, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+        HttpStatus status = HttpStatus.CONFLICT;
         StandardError err = new StandardError();
         err.setTimestamp(Instant.now());
         err.setStatus(status.value());
@@ -85,6 +85,18 @@ public class ResourceExceptionHandler {
         err.setStatus(status.value());
         err.setError("Validation expired");
         err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(org.springframework.security.authentication.BadCredentialsException.class)
+    public ResponseEntity<StandardError> badCredentials(org.springframework.security.authentication.BadCredentialsException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("Unauthorized");
+        err.setMessage("E-mail ou senha inválidos");
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
