@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/token/refresh").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.POST, "/gyms").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/gyms/nearby").permitAll()
                         .requestMatchers(HttpMethod.GET, "/gyms/search").permitAll()
