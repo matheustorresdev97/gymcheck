@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @Table(name = "tb_gyms")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")

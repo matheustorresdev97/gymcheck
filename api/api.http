@@ -33,7 +33,21 @@ Authorization: Bearer {{token}}
 
 {
   "userId": "user-uuid-here",
-  "gymId": "gym-uuid-here",
+  "gymId": "{{createGym.response.body.id}}",
   "userLatitude": -27.2092052,
   "userLongitude": -49.6401091
+}
+
+### Create a gym
+# @name createGym
+POST http://localhost:8080/gyms
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "JS Academy",
+  "description": "Some description",
+  "phone": "1199999999",
+  "latitude": -27.2092052,
+  "longitude": -49.6401091
 }
