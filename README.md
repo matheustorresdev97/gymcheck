@@ -49,7 +49,7 @@ O projeto foi construído utilizando as tecnologias mais modernas do mercado, fo
 - **Framework**: [Angular 20](https://angular.dev/)
 - **Linguagem**: TypeScript
 - **Estilização**: Tailwind CSS v4 & Vanilla CSS
-- **Chamadas de API**: Ky (Service-oriented)
+- **Chamadas de API**: HttpClient (Observable-based) utilizando RxJS.
 - **Arquitetura**: Component-Based Architecture com forte separação de responsabilidades (Container/Presentational pattern).
 
 ### 🖥️ Back-end
