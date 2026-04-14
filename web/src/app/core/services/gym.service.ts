@@ -15,6 +15,18 @@ export class GymService {
     return this.http.post<GymResponse>(this.apiUrl, data);
   }
 
+  getById(id: string): Observable<GymResponse> {
+    return this.http.get<GymResponse>(`${this.apiUrl}/${id}`);
+  }
+
+  update(id: string, data: GymRequest): Observable<GymResponse> {
+    return this.http.put<GymResponse>(`${this.apiUrl}/${id}`, data);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
   search(query: string, page = 0, size = 20): Observable<PaginatedResponse<GymResponse>> {
     const params = new HttpParams()
       .set('q', query)

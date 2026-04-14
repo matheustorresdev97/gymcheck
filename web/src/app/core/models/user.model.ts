@@ -5,3 +5,8 @@ export interface UserResponse {
   roles: string[];
   createdAt: string;
 }
+
+export interface UserUpdateRequest {
+  name?: string;
+  email?: string;
+}
