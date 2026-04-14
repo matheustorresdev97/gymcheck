@@ -2,6 +2,7 @@ export interface CheckInResponse {
   id: string;
   userId: string;
   gymId: string;
+  gymTitle: string;
   createdAt: string;
   validatedAt?: string;
 }

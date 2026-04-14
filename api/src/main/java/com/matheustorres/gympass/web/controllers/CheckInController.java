@@ -66,8 +66,8 @@ public class CheckInController {
             @RequestParam(required = false) String userId,
             @PageableDefault(size = 20) Pageable pageable
     ) {
-        Page<CheckIn> history = fetchUserCheckInHistoryUseCase.execute(requester, userId, pageable);
-        return ResponseEntity.ok(history.map(CheckInResponseDTO::from));
+        Page<CheckInResponseDTO> history = fetchUserCheckInHistoryUseCase.execute(requester, userId, pageable);
+        return ResponseEntity.ok(history);
     }
 
     @Operation(summary = "Obter métricas de check-ins", description = "Retorna a contagem total de check-ins realizados por um usuário.")
