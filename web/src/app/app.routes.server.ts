@@ -10,6 +10,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender
   },
   {
+    path: 'gyms',
+    renderMode: RenderMode.Prerender
+  },
+  {
     path: '**',
     renderMode: RenderMode.Prerender
   }
