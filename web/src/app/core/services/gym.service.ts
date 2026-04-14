@@ -3,13 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { GymRequest, GymResponse } from '../models/gym.model';
 import { PaginatedResponse } from '../models/pagination.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GymService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/gyms';
+  private readonly apiUrl = `${environment.apiUrl}/gyms`;
 
   create(data: GymRequest): Observable<GymResponse> {
     return this.http.post<GymResponse>(this.apiUrl, data);

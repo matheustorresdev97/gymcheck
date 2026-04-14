@@ -5,6 +5,7 @@ import { Observable, tap } from 'rxjs';
 import { LoginRequest, LoginResponse, RegisterRequest } from '../models/auth.model';
 import { UserResponse } from '../models/user.model';
 import { TokenService } from './token.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly tokenService = inject(TokenService);
   private readonly router = inject(Router);
-  private readonly apiUrl = 'http://localhost:8080/auth';
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   private currentUserSignal = signal<UserResponse | null>(this.tokenService.getUser());
   
