@@ -23,13 +23,32 @@
       </a>
       
       @if (authService.currentUser()) {
-        <a 
-          routerLink="/history" 
-          routerLinkActive="text-white bg-neutral-800/50"
-          class="px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 text-neutral-400 hover:text-white"
-        >
-          Meu Histórico
-        </a>
+        @if (authService.isAdmin()) {
+          <a 
+            routerLink="/admin/validations" 
+            routerLinkActive="text-white bg-neutral-800/50"
+            class="px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 text-neutral-400 hover:text-white flex items-center gap-2"
+          >
+            Validações
+            <span class="bg-emerald-500/20 text-emerald-500 px-2 py-0.5 rounded-md text-[10px] font-black">2</span>
+          </a>
+          <a 
+            routerLink="/admin/gyms/create" 
+            routerLinkActive="text-white"
+            class="px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 text-neutral-400 hover:text-white flex items-center gap-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Academia
+          </a>
+        } @else {
+          <a 
+            routerLink="/history" 
+            routerLinkActive="text-white bg-neutral-800/50"
+            class="px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 text-neutral-400 hover:text-white"
+          >
+            Meu Histórico
+          </a>
+        }
       }
     </div>
   </div>
@@ -53,8 +72,13 @@
       <!-- Authenticated User Section -->
       <div class="flex items-center gap-6 pl-6 border-l border-neutral-800">
         <div class="flex flex-col items-end">
-          <span class="text-white text-sm font-bold leading-tight">{{ authService.currentUser()?.name }}</span>
-          <span class="text-neutral-500 text-[10px] font-bold uppercase tracking-tighter">{{ authService.currentUser()?.email }}</span>
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="text-white text-sm font-bold leading-tight">{{ authService.currentUser()?.name }}</span>
+            @if (authService.isAdmin()) {
+              <span class="bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded text-[9px] font-black border border-emerald-500/20 uppercase tracking-tighter">Admin</span>
+            }
+          </div>
+          <span class="text-neutral-500 text-[10px] font-bold uppercase tracking-tighter">{{ authService.isAdmin() ? 'Administrador Geral' : authService.currentUser()?.email }}</span>
         </div>
         
         <button 

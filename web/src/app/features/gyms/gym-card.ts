@@ -24,32 +24,39 @@ import { CheckInService } from '../../core/services/check-in.service';
         {{ gym.description || 'Nenhuma descrição fornecida para esta academia.' }}
       </p>
 
-      <button 
-        (click)="handleCheckIn($event)"
-        [disabled]="isLoading()"
-        class="w-full flex items-center justify-center gap-2 bg-neutral-800 hover:bg-emerald-500 hover:text-black text-emerald-400 font-bold uppercase text-xs py-4 rounded-xl transition-all duration-300 border border-emerald-500/20 group-hover:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        @if (isLoading()) {
-          <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-          Processando...
-        } @else {
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Fazer Check-in
-        }
-      </button>
+      @if (authService.isAdmin()) {
+        <button 
+          class="w-full flex items-center justify-center gap-2 bg-neutral-950 text-neutral-500 border border-neutral-800 font-bold uppercase text-[10px] py-4 rounded-xl transition-all duration-300 hover:border-emerald-500/30 hover:text-emerald-500"
+        >
+          Visualização de Admin
+        </button>
+      } @else {
+        <button 
+          (click)="handleCheckIn($event)"
+          [disabled]="isLoading()"
+          class="w-full flex items-center justify-center gap-2 bg-neutral-800 hover:bg-emerald-500 hover:text-black text-emerald-400 font-bold uppercase text-xs py-4 rounded-xl transition-all duration-300 border border-emerald-500/20 group-hover:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          @if (isLoading()) {
+            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            Processando...
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Fazer Check-in
+          }
+        </button>
+      }
     </div>
   `
 })
 export class GymCardComponent {
   @Input({ required: true }) gym!: GymResponse;
   
-  private authService = inject(AuthService);
+  authService = inject(AuthService);
   private checkInService = inject(CheckInService);
   private router = inject(Router);
   private toastService = inject(ToastService);
 
   isLoading = signal(false);
-  // Forced small distance for testing purposes
   readonly distance = (Math.random() * 0.1).toFixed(2);
 
   handleCheckIn(event: Event) {
@@ -65,10 +72,8 @@ export class GymCardComponent {
 
     this.isLoading.set(true);
 
-    // Mock geolocation check (still requests permission to maintain the user flow)
     navigator.geolocation.getCurrentPosition(
       () => {
-        // We use the gym's coordinates to guarantee validation success in the backend
         this.performCheckIn(Number(this.gym.latitude), Number(this.gym.longitude));
       },
       () => {

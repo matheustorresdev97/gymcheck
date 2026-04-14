@@ -9,5 +9,7 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'gyms', component: GymListComponent },
   { path: 'history', component: HistoryComponent },
+  { path: 'admin/validations', component: GymListComponent }, // Placeholder
+  { path: 'admin/gyms/create', component: GymListComponent }, // Placeholder
   { path: '', redirectTo: 'gyms', pathMatch: 'full' }
 ];
