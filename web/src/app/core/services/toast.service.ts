@@ -17,7 +17,7 @@ export class ToastService {
 
   show(message: string, type: ToastType = 'info'): void {
     const id = this.counter++;
-    this.toasts.update(t => [...t, { id, message, type }]);
+    this.toasts.update((t: Toast[]) => [...t, { id, message, type }]);
     
     setTimeout(() => {
       this.remove(id);
@@ -37,6 +37,6 @@ export class ToastService {
   }
 
   remove(id: number): void {
-    this.toasts.update(t => t.filter(toast => toast.id !== id));
+    this.toasts.update((t: Toast[]) => t.filter((toast: Toast) => toast.id !== id));
   }
 }
