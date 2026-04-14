@@ -99,9 +99,10 @@ export class GymListComponent implements OnInit {
   private fetchGyms(query?: string) {
     this.isLoading.set(true);
     
-    const apiCall$: Observable<GymResponse[]> = query 
-      ? this.gymService.search(query).pipe(map(res => res.content))
-      : this.gymService.getNearby(0, 0); // Still 0,0 pending real geolocation logic
+    // Using search with empty string to return all gyms by default
+    const apiCall$: Observable<GymResponse[]> = this.gymService.search(query || '').pipe(
+      map(res => res.content)
+    );
     
     apiCall$.subscribe({
       next: (gymsList: GymResponse[]) => {
